@@ -1,0 +1,77 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+@font-face {
+  font-family: 'Register';
+  src:  url('font/Register.ttf.woff') format('woff'),
+  url('font/Register.ttf.svg#Register') format('svg'),
+  url('font/Register.ttf.eot'),
+  url('font/Register.eot?#iefix') format('embedded-opentype'); 
+  font-weight: normal;
+  font-style: normal;
+}
+
+#dewItTitle {
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+#dewIt {
+    padding: 0.2em;
+    background-color: #0B4C5F;
+    color: #F8ECE0;
+    font-family: 'Register'; 
+    width: 150px;
+    min-height: 100px;
+    max-height: 400px;
+    outline: none;
+    border: none;
+    font-size: 10px;
+}
+
+.dewItTaskText {
+  display: inline-block;
+  width: 140px;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  clear: both;
+}
+
+input {
+  background-color: #086A87;
+  font-size: 11px;
+}
+
+::placeholder { 
+  color: #F6E3CE;
+}
+
+input, input:focus { 
+  font-family: inherit;
+  width: inherit;
+  max-width: 140px;
+  color: #F8ECE0;
+  border: none;
+  outline: none;
+}
+
+input:focus { 
+  background-color: #0489B1;
+}
+
+.removeButton {
+  float: right;
+  width: 0.8em;
+  cursor: pointer;
+}
+
+.dewItTaskText:hover, .removeButton:hover {
+  background-color: #F8ECE0;
+  color: #0489B1;
+}
+
+.dewItDone .dewItTaskText {
+  text-decoration: line-through;
+}
