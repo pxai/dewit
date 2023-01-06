@@ -3,7 +3,7 @@ populateTasks()
 function addTaskToStorage(task) {
     chrome.storage.local.get('tasks', async ({ tasks }) => {
       tasks.push(task)
-      await chrome.storage.local.set({tasks})
+      await chrome.storage.local.set({'tasks': tasks})
     });
 }
 
@@ -14,7 +14,9 @@ function removeTaskFromStorage(id) {
             console.log("Key1 has been removed");
         });
         alert('Removing: ' + id +","+ tasks.length+","+ filteredTask.length)
-        chrome.storage.local.set({tasks: filteredTask}).then(() => { alert("Removed " + filteredTask.length)})
+        const objData = {};
+        objData['tasks'] = filteredTask;  
+        await chrome.storage.local.set(objData).then(() => { alert("Removed " + filteredTask.length)})
     });
 }
 
@@ -26,7 +28,7 @@ function updateTaskStatusFromStorage(id, completed) {
                 break;
             }
         }
-        await chrome.storage.local.set({tasks})
+        await chrome.storage.local.set({'tasks': tasks})
     });
 }
 
@@ -39,7 +41,7 @@ addTaskInput.addEventListener("keyup", function(event) {
     tasks.forEach(async task => {
         const taskDiv = createTask(task.trim(), randomId());
         dewItTasks.append(taskDiv)
-        await addTaskToStorage({id: taskDiv.id, name: task, completed: false})
+        addTaskToStorage({id: taskDiv.id, name: task, completed: false})
         console.log('Adding a task: ',task)
     })
     

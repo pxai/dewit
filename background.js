@@ -2,8 +2,11 @@ const initialTasks = [];
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.get('tasks', (values) => {
-    console.log("loaded tasks> ", values)
-    if (!values.tasks) chrome.storage.local.set({ tasks: initialTasks });
+    console.log("loaded tasks> ", values, " empty: ", !values.tasks)
+    if (!values.tasks) {
+      console.log("Adding initial")
+      chrome.storage.local.set({ tasks: initialTasks });
+    }
   });
 
   //chrome.storage.local.set({ color });
