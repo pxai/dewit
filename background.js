@@ -1,15 +1,6 @@
-const initialTasks = [];
-
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.get('tasks', (values) => {
-    console.log("loaded tasks> ", values, " empty: ", !values.tasks)
-    if (!values.tasks) {
-      console.log("Adding initial")
-      chrome.storage.local.set({ tasks: initialTasks });
-    }
-  });
-
-  //chrome.storage.local.set({ color });
+chrome.runtime.onInstalled.addListener(async () => {
+  const result = await chrome.storage.sync.get(['tasks']);
+  tasks = result?.tasks || [];
 });
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -18,5 +9,14 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
       `Storage key "${key}" in namespace "${namespace}" changed.`,
       `Old value was "${oldValue}", new value is "${newValue}".`
     );
+  }
+});
+
+chrome.runtime.onConnect.addListener(function(port) {
+  if (port.name === "popup") {
+      port.onDisconnect.addListener(async function() {
+          // popup was closed
+         //await chrome.storage.sync.set({tasks});
+      });
   }
 });

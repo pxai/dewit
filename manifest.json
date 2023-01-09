@@ -22,5 +22,9 @@
       "48": "/images/dewit48.png",
       "128": "/images/dewit128.png"
     },
-    "options_page": "options.html"
+    "options_page": "options.html",
+    "web_accessible_resources": [{
+      "resources": ["sounds/gold.mp3", "sounds/cock.mp3", "sounds/shot.mp3", "sounds/load.mp3"],
+      "matches": []
+    }]
   }
