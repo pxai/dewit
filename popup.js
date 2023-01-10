@@ -1,9 +1,9 @@
 populateTasks().then(() => { console.log('loaded')})
 chrome.runtime.connect({ name: "popup" }); 
-const gold = new Audio({volume: 0.5, src: chrome.runtime.getURL("sounds/gold.mp3")});
-const cock = new Audio({volume: 0.5, src: chrome.runtime.getURL("sounds/cock.mp3")});
-const shot = new Audio({volume: 0.5, src: chrome.runtime.getURL("sounds/shot.mp3")});
-const load = new Audio({volume: 0.5, src: chrome.runtime.getURL("sounds/load.mp3")});
+const gold = new Audio(chrome.runtime.getURL("sounds/gold.mp3"));
+const cock = new Audio(chrome.runtime.getURL("sounds/cock.mp3"));
+const shot = new Audio(chrome.runtime.getURL("sounds/shot.mp3"));
+const load = new Audio(chrome.runtime.getURL("sounds/load.mp3"));
 
 async function addTaskToStorage(task) {
     const result = await chrome.storage.sync.get(['tasks'])
@@ -43,6 +43,7 @@ async function updateTaskStatusFromStorage(id, completed) {
 
 let addTaskInput = document.getElementById("addTaskInput");
 const dewItTasks = document.getElementById("dewItTasks");
+const pomodoroButton = document.getElementById("pomodoroButton");
 
 addTaskInput.addEventListener("keyup", async function(event) {
   if (event.key === "Enter") {
@@ -56,6 +57,12 @@ addTaskInput.addEventListener("keyup", async function(event) {
     
     addTaskInput.value = '';
   }
+})
+
+pomodoroButton.addEventListener("click", function(event) {
+    cock.play();
+    clearAlarm();
+    createAlarm();
 })
 
 async function populateTasks () {
@@ -92,4 +99,16 @@ function createTask(text, id, completed = false) {
 
 function randomId () {
     return Date.now() * Math.random() * 10000;
+}
+
+function createAlarm() {
+    chrome.action.setBadgeText({text: 'ON'});
+    chrome.alarms.create({delayInMinutes: 20});
+    window.close();
+}
+  
+function clearAlarm() {
+    chrome.action.setBadgeText({text: ''});
+    chrome.alarms.clearAll();
+    window.close();
 }
