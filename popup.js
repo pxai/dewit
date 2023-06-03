@@ -16,6 +16,16 @@ function play(sound) {
     new Audio(chrome.runtime.getURL(`sounds/${sound}.mp3`)).play();
 }
 
+function playThenClose (sound) {
+    const audio = new Audio(chrome.runtime.getURL(`sounds/${sound}.mp3`));
+    audio.play();
+    audio.addEventListener('ended', function() {
+        // Your logic when the audio stops playing
+        console.log('Audio stopped playing');
+        window.close()
+      });
+}
+
 async function addTaskToStorage(task) {
     const result = await chrome.storage.sync.get(['tasks'])
 
@@ -71,6 +81,7 @@ addTaskInput.addEventListener("keyup", async function(event) {
 })
 
 pomodoroButton.addEventListener("click", function(event) {
+    playThenClose("start");
     clearAlarm();
     createAlarm();
 })
@@ -113,15 +124,14 @@ function randomId () {
 }
 
 function createAlarm() {
-    new Audio(chrome.runtime.getURL(`sounds/start.mp3`)).play()
     chrome.action.setBadgeText({text: 'ON'});
     chrome.alarms.create({delayInMinutes: 0.1});
-    window.close();
+    //window.close();
 }
   
 function clearAlarm() {
-    new Audio(chrome.runtime.getURL(`sounds/end.mp3`)).play()
     chrome.action.setBadgeText({text: ''});
     chrome.alarms.clearAll();
-    window.close();
+    //window.close();
 }
+
