@@ -12,6 +12,10 @@ body {
   font-style: normal;
 }
 
+#pomodoroButton {
+  cursor: pointer;
+}
+
 #dewItTitle {
   text-align: center;
   font-size: 12px;

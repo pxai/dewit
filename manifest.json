@@ -6,7 +6,7 @@
     "background": {
       "service_worker": "background.js"
     },
-    "permissions": ["storage", "activeTab","alarms", "notifications"],
+    "permissions": ["storage", "activeTab","alarms", "notifications", "offscreen"],
     "action": {
       "default_popup": "popup.html",
       "default_icon": {
@@ -24,7 +24,7 @@
     },
     "options_page": "options.html",
     "web_accessible_resources": [{
-      "resources": ["sounds/gold.mp3", "sounds/cock.mp3", "sounds/shot.mp3", "sounds/load.mp3"],
+      "resources": ["images/dewit32.png", "sounds/gold.mp3", "sounds/cock.mp3", "sounds/shot.mp3", "sounds/load.mp3", "sounds/start.mp3", "sounds/end.mp3"],
       "matches": []
     }]
   }

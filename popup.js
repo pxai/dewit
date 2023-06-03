@@ -4,6 +4,17 @@ const gold = new Audio(chrome.runtime.getURL("sounds/gold.mp3"));
 const cock = new Audio(chrome.runtime.getURL("sounds/cock.mp3"));
 const shot = new Audio(chrome.runtime.getURL("sounds/shot.mp3"));
 const load = new Audio(chrome.runtime.getURL("sounds/load.mp3"));
+const start = new Audio(chrome.runtime.getURL("sounds/start.mp3"));
+const end = new Audio(chrome.runtime.getURL("sounds/end.mp3"));
+
+function setColor(color) {
+    const dewIt = document.findElementById("dewIt");
+    dewIt.style.backgroundColor = color;
+}
+
+function play(sound) {
+    new Audio(chrome.runtime.getURL(`sounds/${sound}.mp3`)).play();
+}
 
 async function addTaskToStorage(task) {
     const result = await chrome.storage.sync.get(['tasks'])
@@ -12,7 +23,7 @@ async function addTaskToStorage(task) {
 
     tasks.push(task)
     await chrome.storage.sync.set({'tasks': tasks})
-    load.play();
+    play("load");
 }
 
 async function removeTaskFromStorage(id) {
@@ -24,7 +35,7 @@ async function removeTaskFromStorage(id) {
 
     await chrome.storage.sync.remove('tasks');
     await chrome.storage.sync.set({'tasks': filteredTask})
-    shot.play();
+    play("shot");
 }
 
 async function updateTaskStatusFromStorage(id, completed) {
@@ -34,7 +45,7 @@ async function updateTaskStatusFromStorage(id, completed) {
     for (let i = 0; i < tasks.length; i++) {
         if (tasks[i].id == id) {
             tasks[i].completed = completed;
-            if (completed) gold.play();
+            if (completed) play("gold");
             break;
         }
     }
@@ -60,7 +71,6 @@ addTaskInput.addEventListener("keyup", async function(event) {
 })
 
 pomodoroButton.addEventListener("click", function(event) {
-    cock.play();
     clearAlarm();
     createAlarm();
 })
@@ -91,6 +101,7 @@ function createTask(text, id, completed = false) {
     div.appendChild(button);
     div.addEventListener("click", async () => {
         div.classList.toggle("dewItDone");
+        if (!div.classList.contains("dewItDone")) play("load");
         await updateTaskStatusFromStorage(div.id, div.classList.contains("dewItDone"))
             //div.remove();
     })
@@ -102,12 +113,14 @@ function randomId () {
 }
 
 function createAlarm() {
+    new Audio(chrome.runtime.getURL(`sounds/start.mp3`)).play()
     chrome.action.setBadgeText({text: 'ON'});
-    chrome.alarms.create({delayInMinutes: 20});
+    chrome.alarms.create({delayInMinutes: 0.1});
     window.close();
 }
   
 function clearAlarm() {
+    new Audio(chrome.runtime.getURL(`sounds/end.mp3`)).play()
     chrome.action.setBadgeText({text: ''});
     chrome.alarms.clearAll();
     window.close();

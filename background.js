@@ -21,22 +21,39 @@ chrome.runtime.onConnect.addListener(function(port) {
   }
 });
 
-chrome.alarms.onAlarm.addListener(() => {
-  chrome.action.setBadgeText({ text: '' });
-  chrome.notifications.create({
-    type: 'basic',
-    iconUrl: 'images/dewit128.png',
-    title: 'Time to stop!',
-    message: 'Did you finished?!',
-    buttons: [
-      { title: 'Keep it Flowing.' }
-    ],
-    priority: 0
-  });
+chrome.alarms.onAlarm.addListener(async () => {
+  chrome.action.setBadgeText({ text: 'Finito' });
+  await playSound();
+  // chrome.notifications.create({
+  //   type: 'basic',
+  //   iconUrl: 'images/dewit32.png',
+  //   title: 'Time to stop!',
+  //   message: 'Did you finished?!',
+  //   buttons: [
+  //     { title: 'Keep it Flowing.' }
+  //   ],
+  //   priority: 0
+  // });
+
 });
 
 chrome.notifications.onButtonClicked.addListener(async () => {
   //const item = await chrome.storage.sync.get(['minutes']);
   chrome.action.setBadgeText({ text: 'ON' });
-  chrome.alarms.create({ delayInMinutes: 20 });
+  chrome.alarms.create({ delayInMinutes: 1 });
 });
+
+async function playSound(source = 'sounds/end.mp3', volume = 1) {
+  await createOffscreen();
+  await chrome.runtime.sendMessage({ play: { source, volume } });
+}
+
+// Create the offscreen document if it doesn't already exist
+async function createOffscreen() {
+  if (await chrome.offscreen.hasDocument()) return;
+  await chrome.offscreen.createDocument({
+      url: 'offscreen.html',
+      reasons: ['AUDIO_PLAYBACK'],
+      justification: 'testing' // details for using the API
+  });
+}
