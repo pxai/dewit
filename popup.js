@@ -1,5 +1,5 @@
-populateTasks().then(() => { console.log('loaded')})
-chrome.runtime.connect({ name: "popup" }); 
+init().then(() => { console.log('loaded')})
+chrome.runtime.connect({ name: "popup" });
 const gold = new Audio(chrome.runtime.getURL("sounds/gold.mp3"));
 const cock = new Audio(chrome.runtime.getURL("sounds/cock.mp3"));
 const shot = new Audio(chrome.runtime.getURL("sounds/shot.mp3"));
@@ -7,8 +7,33 @@ const load = new Audio(chrome.runtime.getURL("sounds/load.mp3"));
 const start = new Audio(chrome.runtime.getURL("sounds/start.mp3"));
 const end = new Audio(chrome.runtime.getURL("sounds/end.mp3"));
 
+let addTaskInput = document.getElementById("addTaskInput");
+const dewItTasks = document.getElementById("dewItTasks");
+const pomodoroButton = document.getElementById("pomodoroButton");
+const dewIt = document.getElementById("dewIt");
+
+const deleteAllButton = document.getElementById("deleteAllButton");
+const confirmDeletion = document.getElementById("confirmDeletion");
+const confirmDeletionYes = document.getElementById("confirmDeletionYes");
+const confirmDeletionNo = document.getElementById("confirmDeletionNo");
+
+const delayInMinutes = 25;
+
+
+deleteAllButton.addEventListener("click", async function(event) {
+    confirmDeletion.style.display = confirmDeletion.style.display == '' || confirmDeletion.style.display == "none" ? "block" : "none";
+})
+
+confirmDeletionYes.addEventListener("click", async function(event) {
+    await removeAllTaskFromStorage();
+    confirmDeletion.style.display = "none";
+})
+
+confirmDeletionNo.addEventListener("click", async function(event) {
+    confirmDeletion.style.display = "none";
+})
+
 function setColor(color) {
-    const dewIt = document.findElementById("dewIt");
     dewIt.style.backgroundColor = color;
 }
 
@@ -34,6 +59,13 @@ async function addTaskToStorage(task) {
     tasks.push(task)
     await chrome.storage.sync.set({'tasks': tasks})
     play("load");
+}
+
+async function removeAllTaskFromStorage() {
+    dewItTasks.innerHTML = '';
+    await chrome.storage.sync.remove('tasks');
+    await chrome.storage.sync.set({'tasks': []})
+    play("shot");
 }
 
 async function removeTaskFromStorage(id) {
@@ -62,9 +94,7 @@ async function updateTaskStatusFromStorage(id, completed) {
     await chrome.storage.sync.set({'tasks': tasks})
 }
 
-let addTaskInput = document.getElementById("addTaskInput");
-const dewItTasks = document.getElementById("dewItTasks");
-const pomodoroButton = document.getElementById("pomodoroButton");
+
 
 addTaskInput.addEventListener("keyup", async function(event) {
   if (event.key === "Enter") {
@@ -75,19 +105,20 @@ addTaskInput.addEventListener("keyup", async function(event) {
         dewItTasks.append(taskDiv)
         await addTaskToStorage({id: taskDiv.id, name: task, completed: false})
     })
-    
+
     addTaskInput.value = '';
   }
 })
 
-pomodoroButton.addEventListener("click", function(event) {
+pomodoroButton.addEventListener("click", async function(event) {
     playThenClose("start");
     clearAlarm();
-    createAlarm();
+    await createAlarm();
 })
 
-async function populateTasks () {
-    const result = await chrome.storage.sync.get(['tasks'])
+async function init () {
+    const result = await chrome.storage.sync.get(['tasks', 'bgcolor'])
+    setColor(result.bgcolor);
     let tasks = result?.tasks || [];
     tasks.forEach(task => {
         const taskDiv = createTask(task.name, task.id, task.completed);
@@ -123,12 +154,14 @@ function randomId () {
     return Date.now() * Math.random() * 10000;
 }
 
-function createAlarm() {
+async function createAlarm() {
     chrome.action.setBadgeText({text: 'ON'});
-    chrome.alarms.create({delayInMinutes: 0.1});
+    const result = await chrome.storage.sync.get(['pomodoro']);
+    window.alert("Pomodoro started! " + result.pomodoro + " minutes");
+    chrome.alarms.create({delayInMinutes: result.pomodoro || delayInMinutes});
     //window.close();
 }
-  
+
 function clearAlarm() {
     chrome.action.setBadgeText({text: ''});
     chrome.alarms.clearAll();

@@ -1,5 +1,6 @@
 chrome.runtime.onInstalled.addListener(async () => {
-  const result = await chrome.storage.sync.get(['tasks']);
+  const result = await chrome.storage.sync.get(['tasks', 'bgcolor']);
+  console.log("result bgcolor: ", result.bgcolor);
   tasks = result?.tasks || [];
 });
 
@@ -22,7 +23,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 });
 
 chrome.alarms.onAlarm.addListener(async () => {
-  chrome.action.setBadgeText({ text: 'Finito' });
+  chrome.action.setBadgeText({ text: '' });
   await playSound();
   // chrome.notifications.create({
   //   type: 'basic',
@@ -39,8 +40,7 @@ chrome.alarms.onAlarm.addListener(async () => {
 
 chrome.notifications.onButtonClicked.addListener(async () => {
   //const item = await chrome.storage.sync.get(['minutes']);
-  chrome.action.setBadgeText({ text: 'ON' });
-  chrome.alarms.create({ delayInMinutes: 1 });
+  console.log('Button clicked!');
 });
 
 async function playSound(source = 'sounds/end.mp3', volume = 1) {

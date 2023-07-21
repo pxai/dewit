@@ -1,10 +1,15 @@
+const DEFAULT_POMODORO = 25;
+
 let page = document.getElementById("buttonDiv");
+const pomodoro = document.getElementById("pomodoro");
 let selectedClassName = "current";
-const presetButtonColors = ["#3aa757", "#e8453c", "#f9bb2d", "#4688f1"];
+const presetButtonColors = ["#3aa757", "#e8453c", "#f9bb2d", "#0B4C5F", "#4688f1"];
+
+pomodoro.addEventListener("change", handlePomodoro);
 
 // Reacts to a button click by marking the selected button and saving
 // the selection
-function handleButtonClick(event) {
+async function handleButtonClick(event) {
   // Remove styling from the previously selected color
 
   //if (!tasks) chrome.storage.sync.set({ tasks: [] });
@@ -17,21 +22,26 @@ function handleButtonClick(event) {
   }
 
   // Mark the button as selected
-  let color = event.target.dataset.color;
+  let bgcolor = event.target.dataset.bgcolor;
   event.target.classList.add(selectedClassName);
-  chrome.storage.sync.set({ color });
+  await chrome.storage.sync.set({ bgcolor });
+}
+
+async function handlePomodoro(event, value) {
+  console.log(event, event.target.value);
+  await chrome.storage.sync.set({ pomodoro: +event.target.value || DEFAULT_POMODORO });
 }
 
 // Add a button to the page for each supplied color
 function constructOptions(buttonColors) {
-  chrome.storage.sync.get("color", (data) => {
-    let currentColor = data.color;
+  chrome.storage.sync.get("bgcolor", (data) => {
+    let currentColor = data.bgcolor;
 
     // For each color we were provided…
     for (let buttonColor of buttonColors) {
       // …create a button with that color…
       let button = document.createElement("button");
-      button.dataset.color = buttonColor;
+      button.dataset.bgcolor = buttonColor;
       button.style.backgroundColor = buttonColor;
 
       // …mark the currently selected color…
