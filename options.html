@@ -1,17 +1,35 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="button.css">
+    <link rel="stylesheet" href="options.css">
   </head>
   <body>
+    <h1>Dewit!!</h1>
+    <h2>Basic settings</h2>
+    <div>
+      <p>Background color:</p>
+    </div>
     <div id="buttonDiv">
     </div>
     <div>
-      <p>Choose a different background color!</p>
+      <input type="color" name="bgColor" id="bgColor" >
+    </div>
+    <div>
+      <p>Text color:</p>
+    </div>
+    <div>
+      <input type="color" name="fgColor" id="fgColor">
     </div>
     <div>
       <label for="pomodoro" class="form-label col">Pomodoro time:</label>
       <input type="number" class="form-control col" id="pomodoro" value="25">
+    </div>
+    <div>
+      <label for="quiet" title="Disable sound">Quiet</label>
+      <input type="checkbox" class="form-control col" id="quiet" value="true">
+    </div>
+    <div>
+        <button id="save">Apply!</button>
     </div>
     <script src="options.js"></script>
   </body>

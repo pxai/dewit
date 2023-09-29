@@ -1,0 +1,27 @@
+body {
+  font-family: 'Register';
+}
+
+@font-face {
+  font-family: 'Register';
+  src:  url('font/Register.ttf.woff') format('woff'),
+  url('font/Register.ttf.svg#Register') format('svg'),
+  url('font/Register.ttf.eot'),
+  url('font/Register.eot?#iefix') format('embedded-opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+#buttonDiv button {
+  width: 50px;
+  height: 50px;
+}
+
+input[type="color"] {
+  width: 50px;
+  height: 50px;
+}
+
+input {
+  font-family: 'Register';
+}

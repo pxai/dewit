@@ -10,6 +10,8 @@ const end = new Audio(chrome.runtime.getURL("sounds/end.mp3"));
 let addTaskInput = document.getElementById("addTaskInput");
 const dewItTasks = document.getElementById("dewItTasks");
 const pomodoroButton = document.getElementById("pomodoroButton");
+const settingsButton = document.getElementById("settingsButton");
+const aboutButton = document.getElementById("aboutButton");
 const dewIt = document.getElementById("dewIt");
 
 const deleteAllButton = document.getElementById("deleteAllButton");
@@ -18,6 +20,7 @@ const confirmDeletionYes = document.getElementById("confirmDeletionYes");
 const confirmDeletionNo = document.getElementById("confirmDeletionNo");
 
 const delayInMinutes = 25;
+let quiet = false;
 
 
 deleteAllButton.addEventListener("click", async function(event) {
@@ -33,15 +36,21 @@ confirmDeletionNo.addEventListener("click", async function(event) {
     confirmDeletion.style.display = "none";
 })
 
-function setColor(color) {
-    dewIt.style.backgroundColor = color;
+function setColor(fgcolor, bgcolor) {
+    dewIt.style.backgroundColor = bgcolor;
+    dewIt.style.color = fgcolor;
+    addTaskInput.style.backgroundColor = fgcolor;
+    addTaskInput.style.color = bgcolor;
+    addTaskInput.placeholder.style.color = bgcolor;
 }
 
 function play(sound) {
+    if (quiet) return;
     new Audio(chrome.runtime.getURL(`sounds/${sound}.mp3`)).play();
 }
 
 function playThenClose (sound) {
+    if (quiet) return;
     const audio = new Audio(chrome.runtime.getURL(`sounds/${sound}.mp3`));
     audio.play();
     audio.addEventListener('ended', function() {
@@ -94,8 +103,6 @@ async function updateTaskStatusFromStorage(id, completed) {
     await chrome.storage.sync.set({'tasks': tasks})
 }
 
-
-
 addTaskInput.addEventListener("keyup", async function(event) {
   if (event.key === "Enter") {
     const task = addTaskInput.value
@@ -116,9 +123,19 @@ pomodoroButton.addEventListener("click", async function(event) {
     await createAlarm();
 })
 
+settingsButton.addEventListener("click", async function(event) {
+    chrome.runtime.openOptionsPage()
+})
+
+aboutButton.addEventListener("click", async function(event) {
+    chrome.tabs.create({ url: 'https://chrome.google.com/webstore/detail/dkkkaiblielgknkjnokdimjehhbdebnh/preview?hl=es&authuser=0' });
+})
+
 async function init () {
-    const result = await chrome.storage.sync.get(['tasks', 'bgcolor'])
-    setColor(result.bgcolor);
+    const result = await chrome.storage.sync.get(['tasks', 'bgcolor', 'fgcolor', 'quiet'])
+    setColor(result.fgcolor, result.bgcolor);
+    quiet = result.quiet;
+    console.log("data:" , result);
     let tasks = result?.tasks || [];
     tasks.forEach(task => {
         const taskDiv = createTask(task.name, task.id, task.completed);

@@ -1,6 +1,8 @@
+let quiet = false;
+
 chrome.runtime.onInstalled.addListener(async () => {
-  const result = await chrome.storage.sync.get(['tasks', 'bgcolor']);
-  console.log("result bgcolor: ", result.bgcolor);
+  const result = await chrome.storage.sync.get(['tasks', 'bgcolor', 'fgcolor', 'quiet']);
+  quiet = result?.quiet || false;
   tasks = result?.tasks || [];
 });
 
@@ -44,6 +46,7 @@ chrome.notifications.onButtonClicked.addListener(async () => {
 });
 
 async function playSound(source = 'sounds/end.mp3', volume = 1) {
+  if (quiet) return;
   await createOffscreen();
   await chrome.runtime.sendMessage({ play: { source, volume } });
 }
