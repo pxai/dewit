@@ -36,12 +36,12 @@ confirmDeletionNo.addEventListener("click", async function(event) {
     confirmDeletion.style.display = "none";
 })
 
-function setColor(fgcolor, bgcolor) {
+function setColor(fgcolor = '#F8ECE0', bgcolor = '#0B4C5F') {
     dewIt.style.backgroundColor = bgcolor;
     dewIt.style.color = fgcolor;
     addTaskInput.style.backgroundColor = fgcolor;
     addTaskInput.style.color = bgcolor;
-    addTaskInput.placeholder.style.color = bgcolor;
+    addTaskInput.style.setProperty("--c", bgcolor);
 }
 
 function play(sound) {

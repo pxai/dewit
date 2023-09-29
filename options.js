@@ -67,11 +67,11 @@ async function handlePomodoro(event, value) {
 // Add a button to the page for each supplied color
 function constructOptions(buttonColors) {
   chrome.storage.sync.get(['bgcolor', 'fgcolor', 'quiet'], (data) => {
-    let currentColor = data.bgcolor;
     quiet = data.quiet || false;
-    updateColors(data.fgcolor, data.bgcolor)
-    fgColor.value = data.fgcolor;
-    bgColor.value = data.bgcolor;
+
+    fgColor.value = data.fgcolor || "#F8ECE0";
+    bgColor.value = data.bgcolor || "#0B4C5F";
+    updateColors(fgColor.value, bgColor.value)
   })
 }
 

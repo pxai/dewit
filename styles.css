@@ -57,7 +57,7 @@ input {
 }
 
 ::placeholder {
-  color: #F6E3CE;
+  color: var(--c, #F6E3CE);
 }
 
 input, input:focus {
